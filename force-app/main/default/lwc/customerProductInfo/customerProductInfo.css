@@ -1,0 +1,108 @@
+/* Main container styling */
+.info-row {
+    display: flex;
+    align-items: center;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid #e5e5e5;
+    min-height: 48px;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+/* Icon styling */
+.icon {
+    margin-right: 0.75rem;
+    color: #706e6b;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+}
+
+/* Label styling - fixed width for alignment */
+.label {
+    font-weight: 600;
+    color: #514f4d;
+    min-width: 200px;
+    margin-right: 1rem;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+/* Value styling */
+.value {
+    color: #080707;
+    flex: 1;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+}
+
+/* Highlight for important values */
+.value.highlight {
+    font-weight: 600;
+    color: #0176d3;
+    font-size: 0.9375rem;
+}
+
+/* Special styling for currency/price values */
+.value.highlight::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 16px;
+    background-color: #0176d3;
+    margin-right: 8px;
+    border-radius: 2px;
+}
+
+/* Lightning tile customization */
+.product-tile {
+    --sds-c-tile-color-border: transparent;
+    --sds-c-tile-color-border-hover: #dddbda;
+    --sds-c-tile-radius-border: 4px;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .info-row {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        padding: 1rem 0;
+    }
+    
+    .label {
+        min-width: 100%;
+        margin-bottom: 0.25rem;
+        margin-right: 0;
+    }
+    
+    .icon {
+        order: -1;
+        margin-right: 0.5rem;
+    }
+    
+    .value {
+        margin-left: 1.75rem; /* Align with first letter after icon */
+    }
+}
+
+/* Hover effect for rows */
+.info-row:hover {
+    background-color: #fafaf9;
+    border-radius: 4px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+}
+
+/* Spacing for empty values */
+.value:empty::before {
+    content: 'N/A';
+    color: #b0adab;
+    font-style: italic;
+}

@@ -25,6 +25,11 @@
         <default>false</default>
         <label>UK</label>
     </customValue>
+    <customValue>
+        <fullName>PK</fullName>
+        <default>false</default>
+        <label>PK</label>
+    </customValue>
     <masterLabel>Home Country</masterLabel>
     <sorted>false</sorted>
 </GlobalValueSet>
