@@ -5,62 +5,101 @@
  * @last modified on  : 09-12-2025
  * @last modified by  : Shahrukh Ahmed
  **/
-@RestResource(urlMapping='/ProductDetail/*')
+@RestResource(urlMapping='/ProductDetails/*')
 global with sharing class ProductDetailRest {
     
-    
-    @HttpGet
-    global static void getProductDetail(){
+    /**
+     * @Description REST API to get product details including pricing information based on contact UUIDs.
+     * @auther Shahrukh Ahmed
+     * @endpoint /services/apexrest/ProductDetails/
+     * @method POST
+     * @requestBody { "uuids": ["uuid1", "uuid2", ...] }
+     * @return Response - Product details along with pricing information
+     */
+    @HttpPost
+    global static void getProductDetails() {
+        
         RestRequest req = RestContext.request;
-        Response response = new Response();
+        RestResponse res = RestContext.response;
+        Response Response = new Response();
+        
         try {
-            // Extract UUID from the request URI
-            String uuId = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+            Request reqObj = (Request) JSON.deserialize(req.requestBody.toString(), Request.class);
+            List<String> uuidList = reqObj.uuids;
             
-            if (String.isBlank(uuId)) {
-                response.setError('UUID cannot be empty', 400);
-                sendResponse(response);
+            if (uuidList == null || uuidList.isEmpty()) {
+                Response.setError('UUID list cannot be empty', 400);
+                sendResponse(Response);
                 return;
             }
             
-            if (!isValidUuid(uuId)) {
-                response.setError('Invalid UUID format',400);
-                sendResponse(response);
+            // Fetch all contacts by UUID
+            List<Contact> contacts = ContactSelector.selectByUuid(uuidList);
+            
+            if (contacts.isEmpty()) {
+                Response.setError('No contacts found for provided UUIDs', 404);
+                sendResponse(Response);
                 return;
             }
             
-            // Fetch contact by UUID
-            List<Contact> contact = ContactSelector.selectByUuid(uuId);
+            Map<String, ProductInfos> prodsResult = new Map<String, ProductInfos>();
+            Set<Id> productIds = new Set<Id>();
+            Set<String> countries = new Set<String>();
             
-            if (contact.isEmpty()) {
-                response.setError('Contact not found with UUID: ' + uuId,404);
-                sendResponse(response);
-                return;
+            for (Contact c : contacts) {
+                
+                if (c.Product__c == null || String.isBlank(c.Home_Country__c)) {
+                    continue;
+                }
+                
+                String key = c.Product__c + ':' + c.Home_Country__c;
+                
+                // Adding all uuids having same product and home country in one wrapper
+                // Note: This is to avoid multiple json node for same product and country combination
+                
+                if (!prodsResult.containsKey(key)) {
+                    ProductInfos prodInfos = new ProductInfos();
+                    prodInfos.uuids = new List<String>();
+                    prodsResult.put(key, prodInfos);
+                }
+                
+                prodsResult.get(key).uuids.add(c.External_UUID__c);
+                productIds.add(c.Product__c);
+                countries.add(c.Home_Country__c);
             }
             
-            List<PricingInfo> pricingInfo = new List<PricingInfo>();
-            // Fetch product pricing details based on contact's product and home country
-            pricingInfo = ProductPricingService.getPricingForContact(contact[0].product__c,contact[0].Home_Country__c);
+            List<ProductPricing__c> pricingRecords = ProductPricingSelector.selectByProductsAndCountries(productIds, countries);
             
-            response.setSuccess('Pricing info retrieved successfully',pricingInfo);
-            sendResponse(response);
+            for (ProductPricing__c p : pricingRecords) {
+                
+                String key = p.Product__c + ':' + p.Home_Country__c;
+                
+                // Map pricing records to corresponding product and country in PrioductInfos wrapper
+                if (prodsResult.containsKey(key)) {
+                    if (prodsResult.get(key).pricing == null) {
+                        prodsResult.get(key).pricing = new List<PricingInfo>();
+                    }
+                    prodsResult.get(key).pricing.add(new PricingInfo(p));
+                }
+            }
+            
+            Response.setSuccess('Pricing retrieved successfully', prodsResult.values());
+            sendResponse(Response);
+            return;
         }
-        catch(Exception e){
+        catch (Exception e) {
             System.debug('REST API Error: ' + e.getMessage() + '\n' + e.getStackTraceString());
-            response.setError('Internal server error',500);
-            sendResponse(response);
+            Response.setError('Internal server error', 500);
+            sendResponse(Response);
+            return;
         }
-        
-        
     }
     /**
-     * UUID format validation.
-     * @param uuid - UUID string to validate
-     * @return Boolean - true if valid, false otherwise
+     * Pricing informations wrapper which combine the multiple uuids have same product and home country.
      */
-    private static Boolean isValidUuid(String uuid) {
-        if (String.isBlank(uuid)) return false;
-        return uuid.length() >= 10;
+    global class ProductInfos {
+        public List<String> uuids;
+        public List<PricingInfo> pricing;
     }
     
     /**
@@ -73,6 +112,12 @@ global with sharing class ProductDetailRest {
         restRes.statusCode = res.statusCode;
         restRes.responseBody = Blob.valueOf(JSON.serialize(res));
     }
+    /**
+     * REST API request wrapper.
+     */
+    public class Request {
+        public List<String> uuids;
+    }
     
     /**
      * REST API response wrapper.
@@ -80,18 +125,18 @@ global with sharing class ProductDetailRest {
     public with sharing class Response {
         public String statusMessage;
         public Integer statusCode;
-        public List<PricingInfo> productPricing;
+        public List<ProductInfos> productDetails;
         
         public void setError(String message,Integer statusCode) {
             this.statusMessage = message;
             this.statusCode = statusCode;
-            this.productPricing = null;
+            this.productDetails = null;
         }
         
-        public void  setSuccess(String message,List<PricingInfo> productPricing) {
+        public void  setSuccess(String message,List<ProductInfos> productDetails) {
             this.statusMessage = message;
             this.statusCode = 200;
-            this.productPricing = productPricing;
+            this.productDetails = productDetails;
         }
     }
 }

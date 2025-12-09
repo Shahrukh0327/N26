@@ -13,9 +13,9 @@ public with sharing class ContactSelector {
      * @param uuid - External UUID of the contact
      * @return List<Contact> - List of contacts matching the UUID
      */
-    public static List<Contact> selectByUuid(String uuid) {
+    public static List<Contact> selectByUuid(List<String> uuid) {
         
-        if (String.isBlank(uuid)) {
+        if (uuid.isEmpty()) {
             return new List<Contact>();
         }
         
@@ -23,10 +23,9 @@ public with sharing class ContactSelector {
             SELECT Id, Name, Product__c, Home_Country__c, 
                     External_UUID__c
             FROM Contact 
-            WHERE External_UUID__c = :uuid 
+            WHERE External_UUID__c in :uuid 
             AND IsDeleted = false
             WITH USER_MODE 
-            LIMIT 1
         ];
         
         return contact;
