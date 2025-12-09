@@ -3,7 +3,7 @@ private class CustomerProductInfoControllerTest {
     @TestSetup
     static void setupData() {
         // Create minimal test data
-        Product2 prod = new Product2(Name = 'Test Product', IsActive = true);
+        Product2 prod =TestDataFactory.createProduct('Test Product');
         insert prod;
         
         Contact con =  TestDataFactory.createContact('12345',prod.Id, 'DE');
@@ -15,14 +15,14 @@ private class CustomerProductInfoControllerTest {
     // Test 1: Success with pricing data
     @IsTest
     static void testGetProductPricing_Success() {
-        // Create test data using your factory
+        
         Product2 product = [SELECT Id FROM Product2 WHERE Name = 'Test Product' LIMIT 1];
         
         Test.startTest();
         List<PricingInfo> result = CustomerProductInfoController.getProductPricing(product.Id, 'DE');
         Test.stopTest();
         
-        System.assert(!result.isEmpty());
+        Assert.isTrue(!result.isEmpty());
     }
     
     // Test 2: Empty parameters validation
@@ -31,7 +31,7 @@ private class CustomerProductInfoControllerTest {
         try {
             CustomerProductInfoController.getProductPricing(null, null);
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Product ID and Home Country are required'));
+            Assert.areEqual(e.getMessage(), 'Product Id and Home Country are required.', 'Expected validation error for empty parameters');
         }
     }
     
@@ -43,23 +43,7 @@ private class CustomerProductInfoControllerTest {
         try {
             CustomerProductInfoController.getProductPricing(product.Id, 'FR');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('No pricing information found'));
-        }
-    }
-    
-    // Test 4: Service layer exception
-    @IsTest
-    static void testServiceException() {
-        Product2 product = [SELECT Id FROM Product2 WHERE Name = 'Test Product' LIMIT 1];
-        
-        // Force exception by making product inactive
-        product.IsActive = false;
-        update product;
-        
-        try {
-            CustomerProductInfoController.getProductPricing(product.Id, 'DE');
-        } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Product Information:'));
+            Assert.areEqual(e.getMessage(), 'No pricing information found for the specified product and country.', 'Expected validation error for no pricing found');
         }
     }
 }

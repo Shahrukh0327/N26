@@ -3,12 +3,14 @@ private class ProductDetailRestTest {
     
     @TestSetup
     static void setupData() {
-        // Create minimal test data
-        Product2 prod = new Product2(Name = 'Test Product', IsActive = true);
+        
+        Product2 prod =TestDataFactory.createProduct('Test Product');
         insert prod;
         
-        Contact con =  TestDataFactory.createContact('12345',prod.Id, 'DE');
-        insert con;
+        Contact con1 = TestDataFactory.createContact('UUID1', prod.Id, 'DE');
+        Contact con2 = TestDataFactory.createContact('UUID2', prod.Id, 'DE');
+        Contact con3 = TestDataFactory.createContact('UUID3', prod.Id, 'DE');
+        insert new List<Contact>{ con1, con2, con3 };
         
         ProductPricing__c price = TestDataFactory.createPricingRecord(prod.Id, 'DE', 9.90, 1.7, 6);
         insert price;
@@ -16,46 +18,70 @@ private class ProductDetailRestTest {
     
     @IsTest
     static void testSuccess() {
+        List<String> uuids = new List<String>{ 'UUID1', 'UUID2', 'UUID3' };
+        
         RestRequest req = new RestRequest();
-        req.requestURI = '/services/apexrest/ProductDetail/12345';
-        req.httpMethod = 'GET';
+        req.requestURI = '/services/apexrest/ProductDetails';
+        req.httpMethod = 'POST';
+        req.addHeader('Content-Type', 'application/json');
+        
+        req.requestBody = Blob.valueOf(JSON.serialize(
+        new Map<String, Object>{ 'uuids' => uuids }
+        ));
+        
         RestContext.request = req;
         RestContext.response = new RestResponse();
         
         Test.startTest();
-        ProductDetailRest.getProductDetail();
+        ProductDetailRest.getProductDetails();
         Test.stopTest();
         
-        System.assertEquals(200, RestContext.response.statusCode);
+        Assert.areEqual(200, RestContext.response.statusCode, 'Expected 200 status code for successful request');
     }
     
     @IsTest
     static void testNotFound() {
+        List<String> uuids = new List<String>{ 'UUID11', 'UUID22', 'UUID33' };
+        
         RestRequest req = new RestRequest();
-        req.requestURI = '/services/apexrest/ProductDetail/99999';
-        req.httpMethod = 'GET';
+        req.requestURI = '/services/apexrest/ProductDetails';
+        req.httpMethod = 'POST';
+        req.addHeader('Content-Type', 'application/json');
+        
+        req.requestBody = Blob.valueOf(JSON.serialize(
+        new Map<String, Object>{ 'uuids' => uuids }
+        ));
+        
         RestContext.request = req;
         RestContext.response = new RestResponse();
         
         Test.startTest();
-        ProductDetailRest.getProductDetail();
+        ProductDetailRest.getProductDetails();
         Test.stopTest();
         
-        System.assertEquals(404, RestContext.response.statusCode);
+        Assert.areEqual(404, RestContext.response.statusCode, 'Expected 404 status code for not found UUIDs');
     }
     
     @IsTest
     static void testEmptyUUID() {
+        List<String> uuids = new List<String>();
+        
         RestRequest req = new RestRequest();
-        req.requestURI = '/services/apexrest/ProductDetail/';
-        req.httpMethod = 'GET';
+        req.requestURI = '/services/apexrest/ProductDetails';
+        req.httpMethod = 'POST';
+        req.addHeader('Content-Type', 'application/json');
+        
+        req.requestBody = Blob.valueOf(JSON.serialize(
+        new Map<String, Object>{ 'uuids' => uuids }
+        ));
+        
         RestContext.request = req;
         RestContext.response = new RestResponse();
         
         Test.startTest();
-        ProductDetailRest.getProductDetail();
+        ProductDetailRest.getProductDetails();
         Test.stopTest();
         
-        System.assertEquals(400, RestContext.response.statusCode);
+        Assert.areEqual(400, RestContext.response.statusCode, 'Expected 404 status code for empty UUID');
     }
 }
