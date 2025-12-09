@@ -48,6 +48,8 @@ This repository contains the Salesforce implementation for **product information
 | ProductPricing__c | CalendarMonth__c      | Currency                        | Monthly cost                                 |
 | ProductPricing__c | CardReplacement__c    | Currency                        | Replacement cost                             |
 | ProductPricing__c | Currency_Symbol__c    | Fo_
+### SCHEMA BUILDER
+<img width="1904" height="751" alt="image" src="https://github.com/user-attachments/assets/097255f8-cb58-431e-8007-f5884451ddb0" />
 
 
 ### REST API Endpoint
