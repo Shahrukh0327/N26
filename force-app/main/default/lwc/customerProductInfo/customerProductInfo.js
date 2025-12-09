@@ -4,12 +4,12 @@ import CONTACT_ID_FIELD from "@salesforce/schema/Case.ContactId";
 import getProductPricing from '@salesforce/apex/CustomerProductInfoController.getProductPricing';
 import HOME_COUNTRY_FIELD from "@salesforce/schema/Contact.Home_Country__c";
 import PRODUCT_ID_FIELD from "@salesforce/schema/Contact.Product__c";
-import { ShowToastEvent } from "lightning/platformShowToastEvent";
 
 export default class CustomerProductInfo extends LightningElement {
 	@api recordId;
 	productURL;
 	productInfo;
+	errorMessage;
 
 	//	 Fetch case details to get ContactId
 	@wire(getRecord, { recordId: '$recordId', fields: [CONTACT_ID_FIELD] })
@@ -41,19 +41,12 @@ export default class CustomerProductInfo extends LightningElement {
 			console.log('Product Pricing Data:', this.productInfo.product);
 
 		} else if (error) {
-
-			let errorMessage = 'An error occurred while fetching product pricing information.';
+			console.log('Error fetching product pricing information:', error);
+			this.errorMessage = 'An error occurred while fetching product pricing information.';
 
 			if (error.body.message) {
-				errorMessage = error.body.message;
+				this.errorMessage = error.body.message;
 			}
-
-			this.showToast("Failure", errorMessage, "error");
 		}
-	}
-	// Function to show toast messages
-	showToast(title, message, variant) {
-		const event = new ShowToastEvent({ title, message, variant });
-		this.dispatchEvent(event);
 	}
 }

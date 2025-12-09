@@ -20,7 +20,7 @@ public with sharing class CustomerProductInfoController {
         try {
             
             if(String.isBlank(productId) || String.isBlank(homeCountry)) {
-                throw newAuraException('Product ID and Home Country are required.');
+                throw newAuraException('Product Id and Home Country are required.');
             }
             // Fetch product pricing information
             List<PricingInfo> prodPricingList = ProductPricingService.getPricingForContact(productId, homeCountry);
@@ -34,7 +34,7 @@ public with sharing class CustomerProductInfoController {
             }
             
         } catch (Exception e) {
-            throw newAuraException('Product Information: ' +e.getMessage());
+            throw newAuraException(e.getMessage());
         }
     }
     

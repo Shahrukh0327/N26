@@ -1,5 +1,5 @@
 <template>
-	<template if:true={productId}>
+	<template if:true={contactId}>
 		<div class="slds-card ">
 			<!-- Header -->
 			<div class="slds-page-header">
@@ -17,46 +17,53 @@
 			</div>
 
 			<!-- Product Information Details -->
-			<div class="slds-p-around_medium">
+			<template lwc:if={productInfo}>
+				<div class="slds-p-around_medium">
 
-				<!-- Product -->
-				<div class="info-row">
-					<lightning-icon icon-name="utility:product" size="small" class="icon"></lightning-icon>
-					<span class="label">Product:</span>
-					<div class="value">
-						<lightning-tile label={productInfo.product} href={productURL}
-							class="product-tile"></lightning-tile>
+					<!-- Product -->
+					<div class="info-row">
+						<lightning-icon icon-name="utility:product" size="small" class="icon"></lightning-icon>
+						<span class="label">Product:</span>
+						<div class="value">
+							<lightning-tile label={productInfo.product} href={productURL}
+								class="product-tile"></lightning-tile>
+						</div>
+					</div>
+
+					<!-- Country -->
+					<div class="info-row">
+						<lightning-icon icon-name="utility:location" size="small" class="icon"></lightning-icon>
+						<span class="label">Home Country:</span>
+						<span class="value">{productInfo.homeCountry}</span>
+					</div>
+
+					<!-- Monthly Cost -->
+					<div class="info-row">
+						<lightning-icon icon-name="utility:moneybag" size="small" class="icon"></lightning-icon>
+						<span class="label">Cost Per Calendar Month:</span>
+						<span class="value highlight">{productInfo.calendarMonth}</span>
+					</div>
+
+					<!-- ATM Fee -->
+					<div class="info-row">
+						<lightning-icon icon-name="utility:money" size="small" class="icon"></lightning-icon>
+						<span class="label">ATM Fee in Other Currencies:</span>
+						<span class="value">{productInfo.atmFee}</span>
+					</div>
+
+					<!-- Replacement -->
+					<div class="info-row">
+						<lightning-icon icon-name="utility:replace" size="small" class="icon"></lightning-icon>
+						<span class="label">Card Replacement Cost:</span>
+						<span class="value highlight">{productInfo.cardReplacement}</span>
 					</div>
 				</div>
-
-				<!-- Country -->
-				<div class="info-row">
-					<lightning-icon icon-name="utility:location" size="small" class="icon"></lightning-icon>
-					<span class="label">Home Country:</span>
-					<span class="value">{productInfo.homeCountry}</span>
-				</div>
-
-				<!-- Monthly Cost -->
-				<div class="info-row">
-					<lightning-icon icon-name="utility:moneybag" size="small" class="icon"></lightning-icon>
-					<span class="label">Cost Per Calendar Month:</span>
-					<span class="value highlight">{productInfo.calendarMonth}</span>
-				</div>
-
-				<!-- ATM Fee -->
-				<div class="info-row">
-					<lightning-icon icon-name="utility:money" size="small" class="icon"></lightning-icon>
-					<span class="label">ATM Fee in Other Currencies:</span>
-					<span class="value">{productInfo.atmFee}</span>
-				</div>
-
-				<!-- Replacement -->
-				<div class="info-row">
-					<lightning-icon icon-name="utility:replace" size="small" class="icon"></lightning-icon>
-					<span class="label">Card Replacement Cost:</span>
-					<span class="value highlight">{productInfo.cardReplacement}</span>
-				</div>
-			</div>
+			</template>
+			
+			<!-- Error Illustration -->
+			<template lwc:else>
+				<c-illustration error-message={errorMessage}></c-illustration>
+			</template>
 		</div>
 	</template>
 
