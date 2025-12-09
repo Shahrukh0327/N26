@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExternalClientApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>shahrukhahmed863@gmail.com</contactEmail>
+    <distributionState>Local</distributionState>
+    <iconUrl>https://login.salesforce.com/logos/Salesforce/SalesCloud/icon.png</iconUrl>
+    <isProtected>false</isProtected>
+    <label>N26 Assignment API</label>
+    <logoUrl>https://login.salesforce.com/logos/Salesforce/SalesCloud/logo.png</logoUrl>
+    <orgScopedExternalApp>00DWU00000W6sOH:N26_Assignment_API</orgScopedExternalApp>
+</ExternalClientApplication>

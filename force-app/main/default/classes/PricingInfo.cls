@@ -1,5 +1,5 @@
 /**
- * Pricing information DTO
+ * Pricing information Wrapper Class
  * Encapsulates product pricing data
  */
 public class PricingInfo {
@@ -10,9 +10,7 @@ public class PricingInfo {
     @AuraEnabled public Id productId;
     @AuraEnabled public String homeCountry;
     
-    // Constructor for mapping from custom object
     public PricingInfo(ProductPricing__c pricing) {
-        string atmFee = (pricing.ATMFee__c != null && pricing.ATMFee__c != 0)? pricing.ATMFee__c.format() + '%' : 'Free';
         this.calendarMonth =pricing.CalendarMonth__c!= null ? pricing.Currency_Symbol__c +' '+ pricing.CalendarMonth__c.format() : 'N/A';
         this.atmFee = (pricing.ATMFee__c != null && pricing.ATMFee__c != 0)? pricing.ATMFee__c.format() + '%' : 'Free';
         this.cardReplacement = pricing.CardReplacement__c!= null ? pricing.Currency_Symbol__c+' '+pricing.CardReplacement__c.format() : 'N/A';
