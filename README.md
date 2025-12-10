@@ -33,6 +33,11 @@ This repository contains the Salesforce implementation for **product information
   - List of UUIDs
   - Pricing information
 - Bulk retrieval reduces the number of API calls, helping avoid **Salesforce daily API limits**.
+- **Salesforce provides an API to check the remaining 24-hour API limit**, but calling this API before every REST request is not an efficient or scalable approach.
+- A better solution is to **use a Custom Object or Custom Metadata** to track API usage.  
+  - Update the API count on every REST API call.  
+  - Define a limit threshold and prevent the external system from hitting Salesforce once the threshold is reached.
+    
 <img width="1266" height="872" alt="image" src="https://github.com/user-attachments/assets/425a646e-d25a-487a-9220-b8c9c16a0a1f" />
 
 ---
