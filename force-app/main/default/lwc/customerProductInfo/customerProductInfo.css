@@ -32,6 +32,10 @@
 
 /* Value styling */
 .value {
+    
+    font-weight: 600;
+    
+    font-size: 0.9375rem;
     color: #080707;
     flex: 1;
     font-size: 0.875rem;
@@ -63,7 +67,6 @@
     --sds-c-tile-color-border: transparent;
     --sds-c-tile-color-border-hover: #dddbda;
     --sds-c-tile-radius-border: 4px;
-    padding: 0.25rem 0.5rem;
 }
 
 /* Responsive adjustments */
