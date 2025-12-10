@@ -5,8 +5,6 @@ This repository contains the Salesforce implementation for **product information
 
 - A **Lightning Web Component (LWC)** for Case layouts.
 - A **REST API** for external systems to retrieve product pricing by UUID(s).
-- A **bulk UUID mechanism** to prevent hitting Salesforce daily API limits.
-
 ---
 
 ## Features
@@ -49,10 +47,12 @@ This repository contains the Salesforce implementation for **product information
 | Contact           | External_UUID__c      | Text(50), External ID          | External system identifier                  |
 | Contact           | Home_Country__c       | Picklist (DE, UK)              | Customer's home country                     |
 | Contact           | Product__c            | Lookup(Product)                | Associated product                           |
+| ProductPricing__c | Home_Country__c       | Picklist (DE, UK)              | home country                                 |
+| ProductPricing__c | Product__c            | Lookup(Product)                 | Associated product                           |
 | ProductPricing__c | ATMFee__c             | Percent                         | ATM fee percentage                           |
 | ProductPricing__c | CalendarMonth__c      | Currency                        | Monthly cost                                 |
 | ProductPricing__c | CardReplacement__c    | Currency                        | Replacement cost                             |
-| ProductPricing__c | Currency_Symbol__c    | Fo_
+| ProductPricing__c | Currency_Symbol__c    | Formula                         | Auto-calculated currency symbol base on selected country|             |
 ### SCHEMA BUILDER
 <img width="1904" height="751" alt="image" src="https://github.com/user-attachments/assets/097255f8-cb58-431e-8007-f5884451ddb0" />
 
@@ -60,7 +60,8 @@ This repository contains the Salesforce implementation for **product information
 ### REST API Endpoint
 
 ### UUID-based Retrieval (Single or Bulk)
-POST /services/apexrest/ProductDetailBulk
+POST /services/apexrest/ProductDetails
+
 Content-Type: application/json
 Body:
 {
