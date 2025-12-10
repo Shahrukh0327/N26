@@ -12,11 +12,12 @@ List<Product2> prodList = new List<Product2>{
 insert prodList;
 
 List<Contact> conList = new List<Contact>{
-    new Contact(FirstName = 'Customer', LastName='1', Home_Country__c = 'DE', Product__c= prodList[0].Id),
-    new Contact(FirstName = 'Customer', LastName='2', Home_Country__c = 'FR', Product__c= prodList[1].Id),
-    new Contact(FirstName = 'Customer', LastName='3', Home_Country__c = 'UK', Product__c= prodList[2].Id),
-    new Contact(FirstName = 'Customer', LastName='4', Home_Country__c = 'IT', Product__c= prodList[0].Id),
-    new Contact(FirstName = 'Customer', LastName='5', Home_Country__c = 'ES', Product__c= prodList[1].Id)
+    new Contact(FirstName = 'Customer', LastName='1',External_UUID__c='Customer1', Home_Country__c = 'DE', Product__c= prodList[0].Id),
+    new Contact(FirstName = 'Customer', LastName='2',External_UUID__c='Customer2', Home_Country__c = 'FR', Product__c= prodList[1].Id),
+    new Contact(FirstName = 'Customer', LastName='3',External_UUID__c='Customer3', Home_Country__c = 'UK', Product__c= prodList[2].Id),
+    new Contact(FirstName = 'Customer', LastName='4',External_UUID__c='Customer4', Home_Country__c = 'IT', Product__c= prodList[0].Id),
+    new Contact(FirstName = 'Customer', LastName='5',External_UUID__c='Customer5', Home_Country__c = 'ES', Product__c= prodList[1].Id),
+    new Contact(FirstName = 'Customer', LastName='6',External_UUID__c='Customer6', Home_Country__c = 'DE', Product__c= prodList[0].Id)
 };
 insert conList;
 
